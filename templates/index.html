@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Folder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f9;
+            color: #333;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        #file-viewer {
+            margin: 20px;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .directory, .file {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .directory:hover, .file:hover {
+            background-color: #eef;
+        }
+        #upload-section {
+            margin: 20px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #breadcrumb {
+            margin: 10px 0;
+        }
+        #breadcrumb a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        #breadcrumb a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>Shared Folder Explorer</h1>
+
+<div id="breadcrumb"></div>
+
+<div id="file-viewer"></div>
+
+<div id="upload-section">
+    <h2>Upload a File</h2>
+    <input type="file" id="file-input">
+    <button onclick="uploadFile()">Upload</button>
+</div>
+
+<script>
+    const baseUrl = "http://127.0.0.1:8085/";
+    let currentPath = "";
+
+    // Fetch folder contents
+    function fetchFolderContents(path = "") {
+        console.log(`${baseUrl}/${path}`);
+        fetch(`${baseUrl}/${path}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                currentPath = path;
+                updateBreadcrumb(path);
+                displayFolderContents(data);
+            })
+            .catch(error => {
+                console.error("Error fetching folder contents:", error);
+                alert("Error fetching folder contents.");
+            });
+    }
+
+    // Display folder contents
+    function displayFolderContents(data) {
+        const fileViewer = document.getElementById("file-viewer");
+        fileViewer.innerHTML = "";
+
+        if (data.directories.length === 0 && data.files.length === 0) {
+            fileViewer.innerHTML = "<p>No files or directories found.</p>";
+            return;
+        }
+
+        data.directories.forEach(dir => {
+            const div = document.createElement("div");
+            div.className = "directory";
+            div.textContent = dir;
+            div.onclick = () => fetchFolderContents(`${currentPath}/${dir}`.replace(/^\/|\/$/g, ""));
+            fileViewer.appendChild(div);
+        });
+
+        data.files.forEach(file => {
+            const div = document.createElement("div");
+            div.className = "file";
+            div.textContent = file;
+
+            const downloadButton = document.createElement("button");
+            downloadButton.textContent = "Download";
+            downloadButton.onclick = (e) => {
+                e.stopPropagation();
+                downloadFile(`${currentPath}/${file}`);
+            };
+
+            div.appendChild(downloadButton);
+            fileViewer.appendChild(div);
+        });
+    }
+
+    // Update breadcrumb navigation
+    function updateBreadcrumb(path) {
+        const breadcrumb = document.getElementById("breadcrumb");
+        const parts = path.split("/").filter(Boolean);
+        breadcrumb.innerHTML = `<a href="#" onclick="fetchFolderContents('')">Home</a> / `;
+
+        let fullPath = "";
+        parts.forEach((part, index) => {
+            fullPath += `${part}/`;
+            breadcrumb.innerHTML += `<a href="#" onclick="fetchFolderContents('${fullPath.slice(0, -1)}')">${part}</a> ${
+                index < parts.length - 1 ? "/ " : ""
+            }`;
+        });
+    }
+
+    // Upload file
+    function uploadFile() {
+        const fileInput = document.getElementById("file-input");
+        if (!fileInput.files.length) {
+            alert("Please select a file to upload.");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch(`${baseUrl}/upload?path=${currentPath}`, {
+            method: "POST",
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(`Upload failed: ${data.error}`);
+                } else {
+                    alert("File uploaded successfully!");
+                    fetchFolderContents(currentPath);
+                }
+            })
+            .catch(error => console.error("Error uploading file:", error));
+    }
+
+    // Download file
+    function downloadFile(filePath) {
+        window.location.href = `${baseUrl}/${filePath}`;
+    }
+
+    // Initial fetch
+    fetchFolderContents();
+</script>
+</body>
+</html>
