@@ -1,0 +1,39 @@
+2024-12-17 14:47:45,273 - WARNING -  * Debugger is active!
+2024-12-17 14:47:45,280 - INFO -  * Debugger PIN: 666-915-303
+2024-12-17 14:47:47,310 - INFO - 127.0.0.1 - - [17/Dec/2024 14:47:47] "GET /index HTTP/1.1" 200 -
+2024-12-17 14:47:47,314 - INFO - 127.0.0.1 - - [17/Dec/2024 14:47:47] "GET /index HTTP/1.1" 200 -
+2024-12-17 14:47:47,363 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:47:47,363 - INFO - 127.0.0.1 - - [17/Dec/2024 14:47:47] "GET / HTTP/1.1" 200 -
+2024-12-17 14:47:47,425 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:47:47,425 - INFO - 127.0.0.1 - - [17/Dec/2024 14:47:47] "GET / HTTP/1.1" 200 -
+2024-12-17 14:48:17,990 - INFO - IP: 127.0.0.1 - Action: List folder contents - Path: StandaloneOSX
+2024-12-17 14:48:17,992 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:17] "GET /StandaloneOSX HTTP/1.1" 200 -
+2024-12-17 14:48:29,143 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:48:29,144 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:29] "GET / HTTP/1.1" 200 -
+2024-12-17 14:48:34,157 - INFO - IP: 127.0.0.1 - Action: List folder contents - Path: StandaloneOSX
+2024-12-17 14:48:34,158 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:34] "GET /StandaloneOSX HTTP/1.1" 200 -
+2024-12-17 14:48:38,841 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:48:38,842 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:38] "GET / HTTP/1.1" 200 -
+2024-12-17 14:48:40,561 - INFO - IP: 127.0.0.1 - Action: Download file - Path: a.txt
+2024-12-17 14:48:40,573 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:40] "GET /a.txt HTTP/1.1" 200 -
+2024-12-17 14:48:50,051 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:48:50,051 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:50] "GET / HTTP/1.1" 200 -
+2024-12-17 14:48:51,002 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:48:51,002 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:51] "GET / HTTP/1.1" 200 -
+2024-12-17 14:48:54,081 - INFO - IP: 127.0.0.1 - Action: List folder contents - Path: StandaloneOSX
+2024-12-17 14:48:54,082 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:54] "GET /StandaloneOSX HTTP/1.1" 200 -
+2024-12-17 14:48:57,696 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:48:57,698 - INFO - 127.0.0.1 - - [17/Dec/2024 14:48:57] "GET / HTTP/1.1" 200 -
+2024-12-17 14:49:12,686 - INFO - IP: 127.0.0.1 - Action: Upload file - Path: 2404.02039v1.pdf
+2024-12-17 14:49:12,689 - INFO - 127.0.0.1 - - [17/Dec/2024 14:49:12] "[35m[1mPOST /upload?path= HTTP/1.1[0m" 201 -
+2024-12-17 14:49:15,572 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:49:15,573 - INFO - 127.0.0.1 - - [17/Dec/2024 14:49:15] "GET / HTTP/1.1" 200 -
+2024-12-17 14:49:46,551 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:49:46,552 - INFO - 127.0.0.1 - - [17/Dec/2024 14:49:46] "GET / HTTP/1.1" 200 -
+2024-12-17 14:49:46,655 - INFO - 127.0.0.1 - - [17/Dec/2024 14:49:46] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-12-17 14:50:06,452 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:50:06,457 - INFO - 127.0.0.1 - - [17/Dec/2024 14:50:06] "GET / HTTP/1.1" 200 -
+2024-12-17 14:50:06,615 - INFO - 127.0.0.1 - - [17/Dec/2024 14:50:06] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-12-17 14:50:10,789 - INFO - 127.0.0.1 - - [17/Dec/2024 14:50:10] "GET /index HTTP/1.1" 200 -
+2024-12-17 14:50:10,801 - INFO - IP: 127.0.0.1 - Action: List folder contents
+2024-12-17 14:50:10,801 - INFO - 127.0.0.1 - - [17/Dec/2024 14:50:10] "GET / HTTP/1.1" 200 -

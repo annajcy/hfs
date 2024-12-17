@@ -1,31 +1,53 @@
 from flask import Flask, render_template, send_from_directory, request, jsonify
-from flask_cors import CORS  # Import the CORS module
+from flask_cors import CORS
 import os
 import logging
 import webbrowser
 import threading
+import argparse
 
 # 创建 Flask 应用
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Enable CORS for all origins or specify a certain origin
-CORS(app, origins=["http://localhost:63342"])  # Allow requests from your frontend URL
+# 启用 CORS
+CORS(app)
 
-# 指定共享文件夹路径
-SHARED_FOLDER = "/Users/jinceyang/RiderProjects/addressables_test/ServerData"
 
-# 检查目录是否存在
-if not os.path.exists(SHARED_FOLDER):
-    print(f"The directory {SHARED_FOLDER} does not exist. Please create it or specify a valid path.")
-    exit(1)
+def parse_args():
+    """
+    解析命令行参数
+    """
+    parser = argparse.ArgumentParser(description="Simple file server")
+    parser.add_argument("--ip", type=str, default="127.0.0.1",
+                        help="IP address to bind the server (default: 127.0.0.1)")
+    parser.add_argument("--port", type=int, default=8085, help="Port to bind the server (default: 8085)")
+    parser.add_argument("--folder", type=str, default="shared", help="Local folder to share")
+    return parser.parse_args()
 
-# 配置日志记录
-LOG_FILE = "server.log"
-logging.basicConfig(
-    filename=LOG_FILE,
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+
+def setup_logging(log_file="server.log"):
+    """
+    配置日志记录器，将日志写入文件并输出到控制台
+    """
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    # File handler
+    file_handler = logging.FileHandler(LOG_FILE)
+    file_handler.setLevel(logging.INFO)
+    file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    file_handler.setFormatter(file_formatter)
+
+    # Stream handler (console)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(logging.INFO)
+    stream_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    stream_handler.setFormatter(stream_formatter)
+
+    # Add handlers to the logger
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+
 
 def log_request(action, path=None):
     """
@@ -36,6 +58,7 @@ def log_request(action, path=None):
     if path:
         log_message += f" - Path: {path}"
     logging.info(log_message)
+
 
 def get_folder_contents(folder_path):
     """
@@ -54,6 +77,7 @@ def get_folder_contents(folder_path):
     except Exception as e:
         logging.error(f"Error listing folder contents: {str(e)}")
         raise
+
 
 @app.route("/", defaults={"subpath": ""}, methods=["GET"])
 @app.route("/<path:subpath>", methods=["GET"])
@@ -76,6 +100,7 @@ def list_folder_contents(subpath):
         return jsonify({"path": subpath, "files": contents["files"], "directories": contents["directories"]})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
@@ -108,6 +133,7 @@ def upload_file():
         logging.error(f"Error uploading file: {str(e)}")
         return jsonify({"error": "File upload failed", "details": str(e)}), 500
 
+
 def serve_file(file_path):
     """
     提供文件下载功能
@@ -120,7 +146,7 @@ def serve_file(file_path):
         logging.warning(f"File not found: {file_path}")
         return jsonify({"error": "File not found"}), 404
 
-# 新增：默认加载 index.html 页面
+
 @app.route("/index", methods=["GET"])
 def index():
     """
@@ -128,17 +154,33 @@ def index():
     """
     return render_template("index.html")
 
-def open_browser():
+
+def open_browser(ip, port):
     """
     自动打开浏览器
     """
-    webbrowser.open("http://127.0.0.1:8085/index")
+    webbrowser.open(f"http://{ip}:{port}/index")
+
 
 if __name__ == "__main__":
-# 清空日志文件内容
+    args = parse_args()
+    SHARED_FOLDER = args.folder
+    LOG_FILE = f"server_{args.ip}_{args.port}.log"
+
+    if not os.path.exists(SHARED_FOLDER):
+        print(f"The directory {SHARED_FOLDER} does not exist. Please create it or specify a valid path.")
+        exit(1)
+
+    # 配置日志
+    setup_logging(LOG_FILE)
+
+    # 清空日志文件内容
     if os.path.exists(LOG_FILE):
         with open(LOG_FILE, 'w'):
-            pass  # Opening the file in write mode clears its contents
-    threading.Timer(1.25, open_browser).start()
-    # 设置服务器监听所有地址，端口为8085
-    app.run(host="127.0.0.1", port=8085, debug=True)
+            pass
+
+    # 自动打开浏览器
+    threading.Timer(1.25, open_browser, args=[args.ip, args.port]).start()
+
+    # 启动服务器
+    app.run(host=args.ip, port=args.port, debug=True)
